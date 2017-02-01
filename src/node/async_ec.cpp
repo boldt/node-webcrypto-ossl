@@ -102,6 +102,56 @@ void AsyncEcImportJwk::HandleOKCallback() {
 	callback->Call(2, argv);
 }
 
+//#######################################################################################
+
+void AsyncExportRaw::Execute() {
+	try {
+		buffer = KEY_export_spki(key->Get());
+	}
+	catch (std::exception& e) {
+		this->SetErrorMessage(e.what());
+	}
+}
+
+void AsyncExportRaw::HandleOKCallback() {
+	Nan::HandleScope scope;
+
+	v8::Local<v8::Object> v8Buffer = String_to_v8Buffer(buffer);
+
+	v8::Local<v8::Value> argv[] = {
+		Nan::Null(),
+		v8Buffer
+	};
+
+	callback->Call(2, argv);
+}
+
+void AsyncImportRaw::Execute() {
+	try {
+		key = KEY_import_spki(in);
+	}
+	catch (std::exception& e) {
+		this->SetErrorMessage(e.what());
+	}
+}
+
+void AsyncImportRaw::HandleOKCallback() {
+	Nan::HandleScope scope;
+
+	v8::Local<v8::Object> v8Key = WKey::NewInstance();
+	WKey *wkey = WKey::Unwrap<WKey>(v8Key);
+	wkey->data = this->key;
+
+	v8::Local<v8::Value> argv[] = {
+		Nan::Null(),
+		v8Key
+	};
+
+	callback->Call(2, argv);
+}
+
+//#######################################################################################
+
 void AsyncEcdsaSign::Execute() {
 	try {
 		out = EC_DSA_sign(pkey, md, in);

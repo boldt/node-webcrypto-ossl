@@ -180,6 +180,14 @@ export class EcCrypto extends BaseCrypto {
                             resolve(raw.buffer);
                     });
                     break;
+                case "raw":
+                    nkey.exportRaw((err, raw) => {
+                        if (err)
+                            reject(err);
+                        else
+                            resolve(raw.buffer);
+                    });
+                    break;
                 default:
                     throw new WebCryptoError(`ExportKey: Unknown export format '${format}'`);
             }

@@ -11,6 +11,7 @@ void WKey::Init(v8::Handle<v8::Object> exports) {
 	Nan::SetPrototypeMethod(tpl, "exportJwk", ExportJwk);
 	Nan::SetPrototypeMethod(tpl, "exportSpki", ExportSpki);
 	Nan::SetPrototypeMethod(tpl, "exportPkcs8", ExportPkcs8);
+	Nan::SetPrototypeMethod(tpl, "exportRaw", ExportRaw);
 	Nan::SetPrototypeMethod(tpl, "sign", Sign);
 	Nan::SetPrototypeMethod(tpl, "verify", Verify);
 	Nan::SetPrototypeMethod(tpl, "RsaOaepEncDec", RsaOaepEncDec);
@@ -32,6 +33,7 @@ void WKey::Init(v8::Handle<v8::Object> exports) {
 	Nan::SetMethod(tpl->GetFunction(), "importPkcs8", ImportPkcs8);
 	Nan::SetMethod(tpl->GetFunction(), "importJwk", ImportJwk);
 	Nan::SetMethod(tpl->GetFunction(), "importSpki", ImportSpki);
+	Nan::SetMethod(tpl->GetFunction(), "importRaw", ImportRaw);
 
 	exports->Set(Nan::New(WKey::ClassName).ToLocalChecked(), tpl->GetFunction());
 }
@@ -202,14 +204,27 @@ NAN_METHOD(WKey::ExportJwk) {
 	}
 }
 
-NAN_METHOD(WKey::ExportSpki) {
+NAN_METHOD(WKey::ExportRaw) {
 	LOG_FUNC();
 
 	WKey *wkey = WKey::Unwrap<WKey>(info.This());
 
 	Nan::Callback *callback = new Nan::Callback(info[0].As<v8::Function>());
 
-	Nan::AsyncQueueWorker(new AsyncExportSpki(callback, wkey->data));
+	Nan::AsyncQueueWorker(new AsyncExportRaw(callback, wkey->data));
+}
+
+/*
+ * in: buffer
+ */
+NAN_METHOD(WKey::ImportRaw) {
+	LOG_FUNC();
+
+	Handle<std::string> in = v8Buffer_to_String(info[0]);
+
+	Nan::Callback *callback = new Nan::Callback(info[1].As<v8::Function>());
+
+	Nan::AsyncQueueWorker(new AsyncImportRaw(callback, in));
 }
 
 NAN_METHOD(WKey::ExportPkcs8) {
@@ -230,6 +245,16 @@ NAN_METHOD(WKey::ImportPkcs8) {
 	Nan::Callback *callback = new Nan::Callback(info[1].As<v8::Function>());
 
 	Nan::AsyncQueueWorker(new AsyncImportPkcs8(callback, in));
+}
+
+NAN_METHOD(WKey::ExportSpki) {
+	LOG_FUNC();
+
+	WKey *wkey = WKey::Unwrap<WKey>(info.This());
+
+	Nan::Callback *callback = new Nan::Callback(info[0].As<v8::Function>());
+
+	Nan::AsyncQueueWorker(new AsyncExportSpki(callback, wkey->data));
 }
 
 /*

@@ -77,6 +77,44 @@ protected:
 	Handle<ScopedEVP_PKEY> pkey;
 };
 
+//#######################################################################################
+
+class AsyncExportRaw : public Nan::AsyncWorker {
+public:
+	AsyncExportRaw(
+		Nan::Callback *callback,
+		Handle<ScopedEVP_PKEY>key)
+		: AsyncWorker(callback), key(key) {}
+	~AsyncExportRaw() {}
+
+	void Execute();
+	void HandleOKCallback();
+
+protected:
+	Handle<ScopedEVP_PKEY> key;
+	// Result
+	Handle<std::string> buffer;
+};
+
+class AsyncImportRaw : public Nan::AsyncWorker {
+public:
+	AsyncImportRaw(
+		Nan::Callback *callback,
+		Handle<std::string> in)
+		: AsyncWorker(callback), in(in) {}
+	~AsyncImportRaw() {}
+
+	void Execute();
+	void HandleOKCallback();
+
+private:
+	Handle<std::string> in;
+	// Result
+	Handle<ScopedEVP_PKEY> key;
+};
+
+//#######################################################################################
+
 class AsyncEcdsaSign : public Nan::AsyncWorker {
 public:
 	AsyncEcdsaSign(

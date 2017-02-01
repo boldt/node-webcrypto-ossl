@@ -34,9 +34,11 @@ public:
 	static NAN_METHOD(ExportJwk);
 	static NAN_METHOD(ExportSpki);
 	static NAN_METHOD(ExportPkcs8);
+	static NAN_METHOD(ExportRaw);
 	static NAN_METHOD(ImportJwk);
 	static NAN_METHOD(ImportSpki);
 	static NAN_METHOD(ImportPkcs8);
+	static NAN_METHOD(ImportRaw);
 	static NAN_METHOD(RsaOaepEncDec);
 	static NAN_METHOD(RsaPssSign);
 	static NAN_METHOD(RsaPssVerify);

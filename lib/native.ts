@@ -69,6 +69,7 @@ export declare class Key {
      * @param callback callback function (err: Error, jwk: Object)
      */
     exportJwk(keyType: KeyType, callback: (err: Error, jwk: any) => void): void;
+
     /**
      * Export Key to JWK data
      * @param keyType type of exported key (PRIVATE or PUBLIC)
@@ -86,6 +87,12 @@ export declare class Key {
      * @param callback callback function (err: Error, raw: Buffer)
      */
     exportPkcs8(callback: (err: Error, raw: Buffer) => void): void;
+
+    /**
+     * export Key to raw
+     * @param callback callback function (err: Error, raw: Buffer)
+     */
+    exportRaw(callback: (err: Error, raw: Buffer) => void): void;
 
     /**
      * sign data EC, RSA
@@ -155,6 +162,7 @@ export declare class Key {
      * @param callback callback function (err: Error, key: Key)
      */
     static importJwk(jwk: Object, keyType: KeyType, callback: (err: Error, key: Key) => void): void;
+
     /**
      * create Key from JWK data
      * @param jwk key in JWK format
@@ -175,6 +183,7 @@ export declare class Key {
      * @param callback callback function (err: Error, key: KeyPair)
      */
     static importPkcs8(raw: Buffer, callback: (err: Error, key: Key) => void): void;
+
 }
 
 export declare class AesKey {
